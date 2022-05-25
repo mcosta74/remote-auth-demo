@@ -3,9 +3,13 @@ version: '3.9'
 services:
   reverse-proxy:
     # The official v2 Traefik docker image
-    image: traefik:v2.6
+    image: traefik:v2.7
     # Enables the web UI and tells Traefik to listen to docker
-    command: --api.insecure=true --providers.docker
+    command: 
+      - "--api.insecure=true" 
+      - "--providers.docker"
+      - "--ping"
+
     ports:
       # The HTTP port
       - "80:80"
@@ -18,8 +22,6 @@ services:
   cheers:
     # The cheers service
     build: ./cool
-    ports:
-      - "8090:8080"
     labels:
       - traefik.http.middlewares.test-auth.forwardauth.address=http://auth:8080/auth
       - traefik.http.middlewares.test-auth.forwardauth.authResponseHeadersRegex=^X-Auth-
@@ -29,7 +31,5 @@ services:
   auth:
     # The authentication service
     build: ./auth
-    # ports:
-    #   - "8090:8080"
     labels:
       - traefik.http.routers.auth.rule=Host(`auth.docker.localhost`)

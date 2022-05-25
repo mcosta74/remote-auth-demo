@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -19,26 +21,32 @@ func main() {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("missing authorization header"))
+			writeString(w, "missing authorization header")
 			return
 		}
 
 		if !strings.HasPrefix(authHeader, "Bearer") {
 			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("invalid authorization header"))
+			writeString(w, "invalid authorization header")
 			return
 		}
 
 		token := authHeader[7:]
 		if token != "1122334455" {
 			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("invalid token"))
+			writeString(w, "invalid token")
 			return
 		}
 
 		w.Header().Add("X-Auth-Username", "mcosta74")
-		w.Write([]byte("authorized"))
+		writeString(w, "authorized")
 	})
 
-	http.ListenAndServe(*httpAddr, mux)
+	fmt.Println(http.ListenAndServe(*httpAddr, mux))
+}
+
+func writeString(w io.Writer, msg string) {
+	if _, err := w.Write([]byte(msg)); err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }

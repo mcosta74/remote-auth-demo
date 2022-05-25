@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -19,11 +20,17 @@ func main() {
 		username := r.Header.Get("X-Auth-Username")
 		if username == "" {
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte("you are not authorized"))
+			writeString(w, "you are not authorized")
 			return
 		}
 
-		w.Write([]byte(fmt.Sprintf("cheers %s!", username)))
+		writeString(w, fmt.Sprintf("cheers %s!", username))
 	})
-	http.ListenAndServe(*httpAddr, mux)
+	fmt.Println(http.ListenAndServe(*httpAddr, mux))
+}
+
+func writeString(w io.Writer, msg string) {
+	if _, err := w.Write([]byte(msg)); err != nil {
+		fmt.Printf("Error writing response: %v\n", err)
+	}
 }
