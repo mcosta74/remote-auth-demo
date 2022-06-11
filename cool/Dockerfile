@@ -16,6 +16,9 @@ RUN CGO_ENABLED=0 go build -o dist/coolsvc main.go
 ## RUNTIME
 FROM scratch AS prod
 
+# Secret key for token encryption 
+ENV SECRET_KEY ""
+
 WORKDIR /app
 
 COPY --from=builder /app/dist/coolsvc ./

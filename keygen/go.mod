@@ -1,4 +1,4 @@
-module github.com/mcosta74/cool
+module github.com/mcosta74/keygen
 
 go 1.18
 

@@ -27,9 +27,13 @@ services:
       - traefik.http.middlewares.test-auth.forwardauth.authResponseHeadersRegex=^X-Auth-
       - traefik.http.routers.cheers.rule=Host(`cheers.docker.localhost`)
       - traefik.http.routers.cheers.middlewares=test-auth
+    environment:
+      - SECRET_KEY=fe297ec180ce2937ca21f3dd026b58bdd3294038c7ac54fb7d2673d11510dcad
 
   auth:
     # The authentication service
     build: ./auth
     labels:
       - traefik.http.routers.auth.rule=Host(`auth.docker.localhost`)
+    environment:
+      - SECRET_KEY=fe297ec180ce2937ca21f3dd026b58bdd3294038c7ac54fb7d2673d11510dcad

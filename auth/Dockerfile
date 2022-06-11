@@ -10,11 +10,14 @@ RUN go mod download
 
 COPY . ./
 
-RUN CGO_ENABLED=0 go build -o dist/authsvc main.go
+RUN CGO_ENABLED=0 go build -o dist/authsvc cmd/authsvc/main.go
 
 #####################################
 ## RUNTIME
 FROM scratch AS prod
+
+# Secret key for token encryption 
+ENV SECRET_KEY ""
 
 WORKDIR /app
 
