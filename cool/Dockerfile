@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 #########################################
 ## BUILDER
 FROM golang:1.18-alpine AS builder
@@ -10,7 +12,7 @@ RUN go mod download
 
 COPY . ./
 
-RUN CGO_ENABLED=0 go build -o dist/coolsvc main.go
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o dist/coolsvc main.go
 
 #####################################
 ## RUNTIME
